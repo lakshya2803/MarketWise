@@ -64,3 +64,31 @@ export const loginUser = async (req,res) => {
         })
     }
 }
+
+//forgot password function
+export const forgotPassword = async (req,res) => {
+    try {
+        const {email,newPassword} = req.body;
+        if(!email){
+            return res.status(400).json({success:false,message:"email is required"});
+        }
+        if(!newPassword){
+            return res.status(404).json({success:false,message:"New password is required"});
+        }
+        const user = await User.findOne({email});
+        if(!user){
+            res.status(404).json({success: false,message:"email is wrong"});
+        }
+        await User.findByIdAndUpdate(user._id,{password:newPassword});
+        res.status(200).json({
+            success:true,
+            message:"Password reset successfully"
+        });
+    } catch (error) {
+        res.status(500).json({
+            success:false,
+            message:"something went wrong",
+            error: error.message
+        })
+    }
+};
