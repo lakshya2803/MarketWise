@@ -3,4 +3,5 @@
 <p>Using mern stack </p>
 
 
-<p> to run this project it only includes the backend part so \n so run command \n npm i</p>
+<p> to run this project it only includes the backend part so so run command</p>
+<p> npm i</p>
