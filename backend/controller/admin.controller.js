@@ -35,38 +35,6 @@ export const addAdmin = async (req,res) => {
     }
 }
 
-//logging in the admin
-export const authAdmin = async (req,res) => {
-    try {
-        const {adminId, password} = req.body;
-        if(!adminId || !password){
-            return res.status(402).json({success: false,message:"Fill the required fields"});
-        }
-        const loggedAdmin = await admin.findOne({adminId}).select("+password");
-        if(!loggedAdmin){
-            return res.status(404).json({success:false,message:"Admin not registered"});
-        }
-        if(password !== loggedAdmin.password){
-            return res.status(404).json({success: false, message:"Incorrect password"});
-        }
-
-        res.status(200).json({
-            success:true,
-            message: "Admin logged in successfully",
-            Admin: {
-                name: loggedAdmin.name,
-                id: loggedAdmin.adminId,
-                address: loggedAdmin.address
-            }
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message
-        })
-    }
-}
-
 //adding controllers for category
 // controller for creating category
 export const createCategory = async (req,res) => {

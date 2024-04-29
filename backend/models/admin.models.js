@@ -18,7 +18,7 @@ const adminSchema = new mongoose.Schema({
         required: [true,"Name is required for registering"],
         unique: true
     },
-    adminId: {
+    email: {
         type: String,
         required: [true,"Id is required for registering"],
         unique: true

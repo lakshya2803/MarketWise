@@ -1,4 +1,5 @@
 import User from "../models/user.models.js";
+import { admin } from "../models/admin.models.js";
 
 // registering user
 export const createUser = async (req,res) => {
@@ -30,36 +31,53 @@ export const createUser = async (req,res) => {
     }
 }
 
-// logining user
 export const loginUser = async (req,res) => {
     try {
         const { email,password } = req.body;
+        if( !email || !password ) {
+            return res.status(401).json({success: false, message:"please fill the required fields"});
+        }
+        
+        const loggedUser = await User.findOne({email}).select('+password');
+        if(loggedUser) {
+            if(password === loggedUser.password){
+                return res.status(200).json({
+                    success:true,
+                    message: "User logged in",
+                    user: {
+                        name: loggedUser.userName,
+                        Id: loggedUser.email,
+                        contactNo: loggedUser.contactNo
+                    }
+                })
+            } else {
+                return res.status(404).json({success:false,message:"Incorrect Password"});
+            }    
+        }
 
-        if(!email || !password) {
-            res.status(401).json({success:false,message:"Email or Password is incorrect"});
-        }
-        // this select is written because in the schema the password field select is made false so that does
-        // not get fetched so to fetch it explicitly we have used it 
-        const loggedUser = await User.findOne({email}).select('+password'); 
-        if(!loggedUser) {
-            return res.status(402).json({success : false, message: "User not registered or password is incorrect"});
-        }
-        if(password !== loggedUser.password) {
-            return res.status(404).json({success:false,message:"Incorrect password"});
-        }
-        res.status(200).json({
-            success:true,
-            message:"user logged in successfully",
-            user:{
-                name:loggedUser.name,
-                email:loggedUser.email,
-                address:loggedUser.address,
-                contact: loggedUser.contact
+        const existingAdmin = await admin.findOne({email}).select('+password');
+        if(existingAdmin) {
+            if(password === existingAdmin.password){
+                return res.status(200).json({
+                    success:true,
+                    message: "Admin logged in successfully",
+                    Admin: {
+                        name : existingAdmin.adminName,
+                        Id : existingAdmin.email,
+                        address : existingAdmin.address
+                    },
+                    redirectTo: "api/v1/admin"
+                })
+            } else {
+                return res.status(404).json({success:false,message:"Incorrect Password"});
             }
-        });
+        }
+        
+
+        return res.status(404).json({success:false,message:"Email not found"});
     } catch (error) {
         res.status(500).json({
-            success : false,
+            success: false,
             message: error.message
         })
     }
