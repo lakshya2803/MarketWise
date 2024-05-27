@@ -46,3 +46,22 @@ export const createProduct = async (req,res) => {
     }
 }
 
+export const viewProduct = async (req,res) => {
+    try {
+        const fetchedProduct = productModels.find({Id:req.params});
+        if(!fetchedProduct){
+            res.status(404).json({success:false,message:"Product not found"});
+        }
+        res.status(200).json({
+            success:true,
+            message: "product fetched is",
+            fetchedProduct
+        });
+    } catch (error) {
+        res.status(500).json({
+            success:false,
+            message:error.message
+        })
+        console.log(error);
+    }
+}

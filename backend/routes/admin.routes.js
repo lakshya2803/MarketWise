@@ -6,7 +6,7 @@ import {
     updateCategory 
 } from "../controller/admin.controller.js";
 import formidable from "express-formidable";
-import { createProduct } from "../controller/products.controller.js";
+import { createProduct, viewProduct } from "../controller/products.controller.js";
 const router = express.Router();
 
 router.route("/register").post(addAdmin); 
@@ -20,5 +20,6 @@ router.route("/delete-category/:id").delete(deleteCategory);
 
 //routes for products
 router.post("/create-product",formidable(),createProduct);
+router.get("/viewProduct/:Id",viewProduct);
 
 export default router;
